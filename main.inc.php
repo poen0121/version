@@ -1,6 +1,6 @@
 <?php
 if (!class_exists('hpl_version')) {
-	include (str_replace('\\', '/', dirname(__FILE__)) . '/system/path/main.inc.php');
+	include (strtr(dirname(__FILE__), '\\', '/') . '/system/path/main.inc.php');
 	/**
 	 * @about - version control directory.
 	 * @param - integer $labelTime (mandatory labeling directory edited time) : Default 0
