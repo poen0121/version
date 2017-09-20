@@ -25,8 +25,6 @@
 
 >> About
 
-	GitHub : https://github.com/poen0121/version
-	
 	Version control directory.
 
 	Mandatory labeling of the time control is not updated with the latest version of instant mention.
