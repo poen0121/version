@@ -52,28 +52,29 @@ if (!class_exists('hpl_version')) {
 					$dir = hpl_path :: relative(hpl_path :: script($dir));
 					$dir = (substr($dir, -1, 1) !== '/' ? $dir . '/' : $dir);
 					if (is_dir($dir)) {
-						if ($dh = opendir($dir)) {
-							$version = false;
-							$maxVersion = false;
-							while (($file = readdir($dh)) !== false) {
-								if (is_dir($dir . $file) && preg_match('/^([0-9]{1}|[1-9]{1}[0-9]*)*\.([0-9]{1}|[1-9]{1}[0-9]*)\.([0-9]{1}|[1-9]{1}[0-9]*)$/', $file)) {
-									$filemtime = filemtime($dir . $file);
-									if (!$maxVersion && ($this->labelTime == 0 || $filemtime <= $this->labelTime)) {
-										$version = (version_compare($file, $version) > 0 ? $file : $version);
-									}
-									if ($limitMaxVersion) {
-										if (!$maxVersion && version_compare($version, $limitMaxVersion) > 0) {
-											$maxVersion = true;
-											$version = (is_dir($dir . $limitMaxVersion) ? $limitMaxVersion : false);
-										}
-										if (version_compare($file, $limitMaxVersion) > 0 && $this->labelTime > 0 && $filemtime <= $this->labelTime) {
-											touch($dir . $file, $this->touchTime); //reset file mtime
+						if ($limitMaxVersion && $this->labelTime == 0) {
+							$result = (is_dir($dir . $limitMaxVersion) ? $limitMaxVersion : false);
+						} else {
+							if ($dh = opendir($dir)) {
+								$version = false;
+								while (($file = readdir($dh)) !== false) {
+									if (is_dir($dir . $file) && preg_match('/^([0-9]{1}|[1-9]{1}[0-9]*)*\.([0-9]{1}|[1-9]{1}[0-9]*)\.([0-9]{1}|[1-9]{1}[0-9]*)$/', $file)) {
+										if ($this->labelTime == 0) {
+											$version = (version_compare($file, $version) > 0 ? $file : $version);
+										} else {
+											$filemtime = filemtime($dir . $file);
+											if ($filemtime <= $this->labelTime) {
+												$version = (version_compare($file, $version) > 0 ? $file : $version);
+											}
+											if ($limitMaxVersion && version_compare($file, $limitMaxVersion) > 0 && $filemtime <= $this->labelTime) {
+												touch($dir . $file, $this->touchTime); //reset file mtime
+											}
 										}
 									}
 								}
+								closedir($dh);
+								$result = ($limitMaxVersion && $version ? (is_dir($dir . $limitMaxVersion) && filemtime($dir . $limitMaxVersion) <= $this->labelTime ? $limitMaxVersion : false) : $version);
 							}
-							closedir($dh);
-							$result = $version;
 						}
 					}
 				}

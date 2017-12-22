@@ -3,7 +3,7 @@
 >> Information
 
 	Title		: hpl_version function
-	Revision	: 2.8.1
+	Revision	: 2.8.2
 	Notes		: You can use chdir() change current script parent directories.
 
 	Revision History:
@@ -14,13 +14,14 @@
 	08-23-2016		Poen		08-23-2016	Poen		Modify path judgment.
 	08-23-2016		Poen		08-23-2016	Poen		Change get_dir function name become get.
 	08-23-2016		Poen		08-23-2016	Poen		Change get_label function name become label.
-	09-08-2016		Poen		09-13-2016	Poen		Improve get function.
+	09-08-2016		Poen		12-22-2017	Poen		Improve get function.
 	09-08-2016		Poen		09-13-2016	Poen		Improve is_exists function.
 	09-30-2016		Poen		09-30-2016	Poen		Debug clearstatcache().
 	03-27-2017		Poen		03-27-2017	Poen		Fix __construct function error message.
 	03-27-2017		Poen		03-27-2017	Poen		Fix get function error message.
 	03-27-2017		Poen		03-27-2017	Poen		Fix is_exists function error message.
 	04-06-2017		Poen		04-06-2017	Poen		Debug get function version compare.
+	12-22-2017		Poen		12-22-2017	Poen		Fix get function version compare.
 	---------------------------------------------------------------------------
 
 >> About
