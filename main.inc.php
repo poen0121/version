@@ -49,31 +49,31 @@ if (!class_exists('hpl_version')) {
 					hpl_error :: cast(__CLASS__ . '::' . __FUNCTION__ . '(): Invalid highest version number ' . $limitMaxVersion, E_USER_WARNING, 1);
 				} else {
 					clearstatcache();
-					$dir = hpl_path :: relative(hpl_path :: script($dir));
-					$dir = (substr($dir, -1, 1) !== '/' ? $dir . '/' : $dir);
-					if (is_dir($dir)) {
+					$relativeDir = hpl_path :: relative(hpl_path :: script($dir));
+					$relativeDir = (substr($relativeDir, -1, 1) !== '/' ? $relativeDir . '/' : $relativeDir);
+					if (is_dir($relativeDir)) {
 						if ($limitMaxVersion && $this->labelTime == 0) {
-							$result = (is_dir($dir . $limitMaxVersion) ? $limitMaxVersion : false);
+							$result = (is_dir($relativeDir . $limitMaxVersion) ? $limitMaxVersion : false);
 						} else {
-							if ($dh = opendir($dir)) {
+							if ($dh = opendir($relativeDir)) {
 								$version = false;
 								while (($file = readdir($dh)) !== false) {
-									if (is_dir($dir . $file) && preg_match('/^([0-9]{1}|[1-9]{1}[0-9]*)*\.([0-9]{1}|[1-9]{1}[0-9]*)\.([0-9]{1}|[1-9]{1}[0-9]*)$/', $file)) {
+									if (is_dir($relativeDir . $file) && preg_match('/^([0-9]{1}|[1-9]{1}[0-9]*)*\.([0-9]{1}|[1-9]{1}[0-9]*)\.([0-9]{1}|[1-9]{1}[0-9]*)$/', $file)) {
 										if ($this->labelTime == 0) {
 											$version = (version_compare($file, $version) > 0 ? $file : $version);
 										} else {
-											$filemtime = filemtime($dir . $file);
+											$filemtime = filemtime($relativeDir . $file);
 											if ($filemtime <= $this->labelTime) {
 												$version = (version_compare($file, $version) > 0 ? $file : $version);
 											}
 											if ($limitMaxVersion && version_compare($file, $limitMaxVersion) > 0 && $filemtime <= $this->labelTime) {
-												touch($dir . $file, $this->touchTime); //reset file mtime
+												touch($relativeDir . $file, $this->touchTime); //reset file mtime
 											}
 										}
 									}
 								}
 								closedir($dh);
-								$result = ($limitMaxVersion && $version ? (is_dir($dir . $limitMaxVersion) && filemtime($dir . $limitMaxVersion) <= $this->labelTime ? $limitMaxVersion : false) : $version);
+								$result = ($limitMaxVersion && $version ? (is_dir($relativeDir . $limitMaxVersion) && filemtime($relativeDir . $limitMaxVersion) <= $this->labelTime ? $limitMaxVersion : false) : $version);
 							}
 						}
 					}
@@ -98,9 +98,9 @@ if (!class_exists('hpl_version')) {
 					hpl_error :: cast(__CLASS__ . '::' . __FUNCTION__ . '(): Invalid version number ' . $version, E_USER_WARNING, 1);
 				} else {
 					clearstatcache();
-					$dir = hpl_path :: relative(hpl_path :: script($dir));
-					$dir = (substr($dir, -1, 1) !== '/' ? $dir . '/' : $dir);
-					$result = is_dir($dir . $version);
+					$relativeDir = hpl_path :: relative(hpl_path :: script($dir));
+					$relativeDir = (substr($relativeDir, -1, 1) !== '/' ? $relativeDir . '/' : $relativeDir);
+					$result = is_dir($relativeDir . $version);
 				}
 			}
 			return $result;
