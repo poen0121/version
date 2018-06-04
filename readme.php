@@ -3,7 +3,7 @@
 >> Information
 
 	Title		: hpl_version function
-	Revision	: 2.8.3
+	Revision	: 2.9.3
 	Notes		: You can use chdir() change current script parent directories.
 
 	Revision History:
@@ -23,6 +23,7 @@
 	04-06-2017		Poen		04-06-2017	Poen		Debug get function version compare.
 	12-22-2017		Poen		12-22-2017	Poen		Fix get function version compare.
 	02-06-2018		Poen		02-06-2018	Poen		Fix PHP 7 content function to retain original input args.
+	06-04-2018		Poen		06-04-2018	Poen		Add the anchor file judgment mechanism.
 	---------------------------------------------------------------------------
 
 >> About
@@ -62,9 +63,10 @@
 
 	==============================================================
 	Specify search directory to obtain version directory name based on the current script and document root.
-	Usage : Object->get($dir,$limitMaxVersion);
+	Usage : Object->get($dir,$limitMaxVersion,$anchor);
 	Param : string $dir (home directory path)
 	Param : string $limitMaxVersion (limit maximum version) : Default void
+	Param : string $anchor (anchor file name at version directory) : Default void
 	Return : string
 	Return Note : Returns FALSE on failure.
 	--------------------------------------------------------------
@@ -72,17 +74,24 @@
 	$hpl_version->get('./test');
 	Example :
 	$hpl_version->get('./test','1.0.6');
+	Example :
+	$hpl_version->is_exists('./test','1.0.6','anchor.php');
+	Example :
+	$hpl_version->is_exists('./test','','anchor.php');
 	==============================================================
 
 	==============================================================
 	Check the version of the directory exists specified search directory based on the current script and document root.
-	Usage : Object->is_exists($dir,$version);
+	Usage : Object->is_exists($dir,$version,$anchor);
 	Param : string $dir (home directory path)
 	Param : string $version (check version)
+	Param : string $anchor (anchor file name at version directory) : Default void
 	Return : boolean
 	--------------------------------------------------------------
 	Example :
 	$hpl_version->is_exists('./test','1.0.1');
+	Example :
+	$hpl_version->is_exists('./test','1.0.1','anchor.php');
 	==============================================================
 
 >> Revision Rule

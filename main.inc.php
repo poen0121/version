@@ -36,14 +36,18 @@ if (!class_exists('hpl_version')) {
 		 * @access - public function
 		 * @param - string $dir (home directory path)
 		 * @param - string $limitMaxVersion (limit maximum version) : Default void
+		 * @param - string $anchorName (anchor file name at version directory) : Default void
 		 * @return - string|boolean
-		 * @usage - Object->get($dir,$limitMaxVersion);
+		 * @usage - Object->get($dir,$limitMaxVersion,$anchorName);
 		 */
-		public function get($dir = null, $limitMaxVersion = '') {
+		public function get($dir = null, $limitMaxVersion = '', $anchorName = '') {
 			$result = false;
-			if (!hpl_func_arg :: delimit2error() && !hpl_func_arg :: string2error(0) && !hpl_func_arg :: string2error(1)) {
+			if (!hpl_func_arg :: delimit2error() && !hpl_func_arg :: string2error(0) && !hpl_func_arg :: string2error(1) && !hpl_func_arg :: string2error(2)) {
 				if (hpl_path :: is_absolute($dir) || (!hpl_path :: is_root_model($dir) && !hpl_path :: is_relative($dir))) {
 					hpl_error :: cast(__CLASS__ . '::' . __FUNCTION__ . '(): Invalid argument by parameter 1', E_USER_WARNING, 1);
+				}
+				elseif (preg_match('/[\\\\:\/]/i', $anchorName)) {
+					hpl_error :: cast(__CLASS__ . '::' . __FUNCTION__ . '(): Unknown anchor file name', E_USER_WARNING, 1);
 				}
 				elseif ($limitMaxVersion != '' && !preg_match('/^([0-9]{1}|[1-9]{1}[0-9]*)*\.([0-9]{1}|[1-9]{1}[0-9]*)\.([0-9]{1}|[1-9]{1}[0-9]*)$/', $limitMaxVersion)) {
 					hpl_error :: cast(__CLASS__ . '::' . __FUNCTION__ . '(): Invalid highest version number ' . $limitMaxVersion, E_USER_WARNING, 1);
@@ -53,18 +57,18 @@ if (!class_exists('hpl_version')) {
 					$relativeDir = (substr($relativeDir, -1, 1) !== '/' ? $relativeDir . '/' : $relativeDir);
 					if (is_dir($relativeDir)) {
 						if ($limitMaxVersion && $this->labelTime == 0) {
-							$result = (is_dir($relativeDir . $limitMaxVersion) ? $limitMaxVersion : false);
+							$result = (($anchorName ? is_file($relativeDir . $limitMaxVersion . '/' . $anchorName) : is_dir($relativeDir . $limitMaxVersion)) ? $limitMaxVersion : false);
 						} else {
 							if ($dh = opendir($relativeDir)) {
 								$version = false;
 								while (($file = readdir($dh)) !== false) {
 									if (is_dir($relativeDir . $file) && preg_match('/^([0-9]{1}|[1-9]{1}[0-9]*)*\.([0-9]{1}|[1-9]{1}[0-9]*)\.([0-9]{1}|[1-9]{1}[0-9]*)$/', $file)) {
 										if ($this->labelTime == 0) {
-											$version = (version_compare($file, $version) > 0 ? $file : $version);
+											$version = (!$anchorName || ($anchorName && is_file($relativeDir . $file . '/' . $anchorName)) ? (version_compare($file, $version) > 0 ? $file : $version) : $version);
 										} else {
 											$filemtime = filemtime($relativeDir . $file);
 											if ($filemtime <= $this->labelTime) {
-												$version = (version_compare($file, $version) > 0 ? $file : $version);
+												$version = (!$anchorName || ($anchorName && is_file($relativeDir . $file . '/' . $anchorName)) ? (version_compare($file, $version) > 0 ? $file : $version) : $version);
 											}
 											if ($limitMaxVersion && version_compare($file, $limitMaxVersion) > 0 && $filemtime <= $this->labelTime) {
 												touch($relativeDir . $file, $this->touchTime); //reset file mtime
@@ -73,7 +77,7 @@ if (!class_exists('hpl_version')) {
 									}
 								}
 								closedir($dh);
-								$result = ($limitMaxVersion && $version ? (is_dir($relativeDir . $limitMaxVersion) && filemtime($relativeDir . $limitMaxVersion) <= $this->labelTime ? $limitMaxVersion : false) : $version);
+								$result = ($limitMaxVersion && $version ? (($anchorName ? is_file($relativeDir . $limitMaxVersion . '/' . $anchorName) : is_dir($relativeDir . $limitMaxVersion)) && filemtime($relativeDir . $limitMaxVersion) <= $this->labelTime ? $limitMaxVersion : false) : $version);
 							}
 						}
 					}
@@ -85,14 +89,18 @@ if (!class_exists('hpl_version')) {
 		 * @access - public function
 		 * @param - string $dir (home directory path)
 		 * @param - string $version (check version)
+		 * @param - string $anchorName (anchor file name at version directory) : Default void
 		 * @return - boolean
-		 * @usage - Object->is_exists($dir,$version);
+		 * @usage - Object->is_exists($dir,$version,$anchorName);
 		 */
-		public function is_exists($dir = null, $version = null) {
+		public function is_exists($dir = null, $version = null, $anchorName = '') {
 			$result = false;
-			if (!hpl_func_arg :: delimit2error() && !hpl_func_arg :: string2error(0) && !hpl_func_arg :: string2error(1)) {
+			if (!hpl_func_arg :: delimit2error() && !hpl_func_arg :: string2error(0) && !hpl_func_arg :: string2error(1) && !hpl_func_arg :: string2error(2)) {
 				if (hpl_path :: is_absolute($dir) || (!hpl_path :: is_root_model($dir) && !hpl_path :: is_relative($dir))) {
 					hpl_error :: cast(__CLASS__ . '::' . __FUNCTION__ . '(): Invalid argument by parameter 1', E_USER_WARNING, 1);
+				}
+				elseif (preg_match('/[\\\\:\/]/i', $anchorName)) {
+					hpl_error :: cast(__CLASS__ . '::' . __FUNCTION__ . '(): Unknown anchor file name', E_USER_WARNING, 1);
 				}
 				elseif (!preg_match('/^([0-9]{1}|[1-9]{1}[0-9]*)*\.([0-9]{1}|[1-9]{1}[0-9]*)\.([0-9]{1}|[1-9]{1}[0-9]*)$/', $version)) {
 					hpl_error :: cast(__CLASS__ . '::' . __FUNCTION__ . '(): Invalid version number ' . $version, E_USER_WARNING, 1);
@@ -100,7 +108,7 @@ if (!class_exists('hpl_version')) {
 					clearstatcache();
 					$relativeDir = hpl_path :: relative(hpl_path :: script($dir));
 					$relativeDir = (substr($relativeDir, -1, 1) !== '/' ? $relativeDir . '/' : $relativeDir);
-					$result = is_dir($relativeDir . $version);
+					$result = ($anchorName ? is_file($relativeDir . $version . '/' . $anchorName) : is_dir($relativeDir . $version));
 				}
 			}
 			return $result;
