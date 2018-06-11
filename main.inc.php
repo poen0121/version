@@ -57,18 +57,18 @@ if (!class_exists('hpl_version')) {
 					$relativeDir = (substr($relativeDir, -1, 1) !== '/' ? $relativeDir . '/' : $relativeDir);
 					if (is_dir($relativeDir)) {
 						if ($limitMaxVersion && $this->labelTime == 0) {
-							$result = (($anchorName ? is_file($relativeDir . $limitMaxVersion . '/' . $anchorName) : is_dir($relativeDir . $limitMaxVersion)) ? $limitMaxVersion : false);
+							$result = ((isset ($anchorName { 0 }) ? is_file($relativeDir . $limitMaxVersion . '/' . $anchorName) : is_dir($relativeDir . $limitMaxVersion)) ? $limitMaxVersion : false);
 						} else {
 							if ($dh = opendir($relativeDir)) {
 								$version = false;
 								while (($file = readdir($dh)) !== false) {
 									if (is_dir($relativeDir . $file) && preg_match('/^([0-9]{1}|[1-9]{1}[0-9]*)*\.([0-9]{1}|[1-9]{1}[0-9]*)\.([0-9]{1}|[1-9]{1}[0-9]*)$/', $file)) {
 										if ($this->labelTime == 0) {
-											$version = (!$anchorName || ($anchorName && is_file($relativeDir . $file . '/' . $anchorName)) ? (version_compare($file, $version) > 0 ? $file : $version) : $version);
+											$version = (!isset ($anchorName { 0 }) || (isset ($anchorName { 0 }) && is_file($relativeDir . $file . '/' . $anchorName)) ? (version_compare($file, $version) > 0 ? $file : $version) : $version);
 										} else {
 											$filemtime = filemtime($relativeDir . $file);
 											if ($filemtime <= $this->labelTime) {
-												$version = (!$anchorName || ($anchorName && is_file($relativeDir . $file . '/' . $anchorName)) ? (version_compare($file, $version) > 0 ? $file : $version) : $version);
+												$version = (!isset ($anchorName { 0 }) || (isset ($anchorName { 0 }) && is_file($relativeDir . $file . '/' . $anchorName)) ? (version_compare($file, $version) > 0 ? $file : $version) : $version);
 											}
 											if ($limitMaxVersion && version_compare($file, $limitMaxVersion) > 0 && $filemtime <= $this->labelTime) {
 												touch($relativeDir . $file, $this->touchTime); //reset file mtime
@@ -77,7 +77,7 @@ if (!class_exists('hpl_version')) {
 									}
 								}
 								closedir($dh);
-								$result = ($limitMaxVersion && $version ? (($anchorName ? is_file($relativeDir . $limitMaxVersion . '/' . $anchorName) : is_dir($relativeDir . $limitMaxVersion)) && filemtime($relativeDir . $limitMaxVersion) <= $this->labelTime ? $limitMaxVersion : false) : $version);
+								$result = ($limitMaxVersion && $version ? ((isset ($anchorName { 0 }) ? is_file($relativeDir . $limitMaxVersion . '/' . $anchorName) : is_dir($relativeDir . $limitMaxVersion)) && filemtime($relativeDir . $limitMaxVersion) <= $this->labelTime ? $limitMaxVersion : false) : $version);
 							}
 						}
 					}
@@ -108,7 +108,7 @@ if (!class_exists('hpl_version')) {
 					clearstatcache();
 					$relativeDir = hpl_path :: relative(hpl_path :: script($dir));
 					$relativeDir = (substr($relativeDir, -1, 1) !== '/' ? $relativeDir . '/' : $relativeDir);
-					$result = ($anchorName ? is_file($relativeDir . $version . '/' . $anchorName) : is_dir($relativeDir . $version));
+					$result = (isset ($anchorName { 0 }) ? is_file($relativeDir . $version . '/' . $anchorName) : is_dir($relativeDir . $version));
 				}
 			}
 			return $result;

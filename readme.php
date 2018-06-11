@@ -3,7 +3,7 @@
 >> Information
 
 	Title		: hpl_version function
-	Revision	: 2.9.3
+	Revision	: 2.9.4
 	Notes		: You can use chdir() change current script parent directories.
 
 	Revision History:
@@ -24,6 +24,7 @@
 	12-22-2017		Poen		12-22-2017	Poen		Fix get function version compare.
 	02-06-2018		Poen		02-06-2018	Poen		Fix PHP 7 content function to retain original input args.
 	06-04-2018		Poen		06-04-2018	Poen		Add the anchor file judgment mechanism.
+	06-11-2018		Poen		06-11-2018	Poen		Fix the anchor file judgment mechanism.
 	---------------------------------------------------------------------------
 
 >> About
